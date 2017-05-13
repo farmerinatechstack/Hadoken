@@ -5,7 +5,7 @@ using UnityEngine;
 public class HadokenBehavior : MonoBehaviour {
     public ParticleSystem explosion;
     public Transform handle;
-    public float scaleLimit;
+    public float scaleLimit = 1.5f;
 
     private ParticleSystem ball;
     private Rigidbody rb;
@@ -16,8 +16,6 @@ public class HadokenBehavior : MonoBehaviour {
 	void Start () {
         ball = GetComponent<ParticleSystem>();
         rb = GetComponent<Rigidbody>();
-
-        scaleLimit = 2f;
         StartCoroutine(Grow());
 	}
 	
@@ -37,19 +35,23 @@ public class HadokenBehavior : MonoBehaviour {
         rb.angularVelocity = angularVelocity * velocityDamp;
     }
 
-    private void OnCollisionEnter(Collision collision) {
+    public void Kill() {
         ball.Stop();
         explosion.gameObject.SetActive(true);
         Destroy(gameObject, 0.5f);
     }
 
+    private void OnCollisionEnter(Collision collision) {
+        Kill();
+    }
+
     private IEnumerator Grow() {
-        for (int i = 0; i < 10; i++) {
+        while (scaleFactor < scaleLimit) {
             scaleFactor += 0.1f;
             Vector3 newScale = new Vector3(scaleFactor, scaleFactor, scaleFactor);
 
             rb.mass += 10;
-            velocityDamp -= 0.05f;
+            velocityDamp -= 0.01f;
             transform.localScale = newScale;
 
             yield return new WaitForSeconds(0.1f);

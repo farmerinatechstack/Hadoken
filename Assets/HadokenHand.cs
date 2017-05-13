@@ -4,8 +4,10 @@ using UnityEngine;
 
 public class HadokenHand : MonoBehaviour {
     public HadokenBehavior hadoken;
+    public bool comboReady;
+    public ComboHadoken comboHandler;
 
-    private HadokenBehavior spawnedHadoken;
+    public HadokenBehavior spawnedHadoken;
     private SteamVR_TrackedObject obj;
     private SteamVR_Controller.Device controller;
 
@@ -17,9 +19,12 @@ public class HadokenHand : MonoBehaviour {
 	
 	// Update is called once per frame
 	void Update () {
-		if (controller.GetPress(SteamVR_Controller.ButtonMask.Trigger) && spawnedHadoken == null) {
+		if (controller.GetPressDown(SteamVR_Controller.ButtonMask.Trigger) && spawnedHadoken == null) {
             spawnedHadoken = Instantiate(hadoken, transform.position, transform.rotation);
             spawnedHadoken.handle = transform;
+            if (comboReady) {
+                comboHandler.StartCombo(spawnedHadoken);
+            }
         } else if (controller.GetPressUp(SteamVR_Controller.ButtonMask.Trigger) && spawnedHadoken != null) {
             spawnedHadoken.Release(controller.velocity, controller.angularVelocity);
             spawnedHadoken = null;
