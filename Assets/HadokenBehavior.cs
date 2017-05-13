@@ -6,6 +6,7 @@ public class HadokenBehavior : MonoBehaviour {
     public ParticleSystem explosion;
     public Transform handle;
     public float scaleLimit = 1.5f;
+    public AudioSource src;
 
     private ParticleSystem ball;
     private Rigidbody rb;
@@ -26,7 +27,7 @@ public class HadokenBehavior : MonoBehaviour {
         }
     }
 
-    public void Release(Vector3 velocity, Vector3 angularVelocity) {
+    public void Throw(Vector3 velocity, Vector3 angularVelocity) {
         StopAllCoroutines();
         handle = null;
 
@@ -38,7 +39,8 @@ public class HadokenBehavior : MonoBehaviour {
     public void Kill() {
         ball.Stop();
         explosion.gameObject.SetActive(true);
-        Destroy(gameObject, 0.5f);
+        src.Play();
+        Destroy(gameObject, 2f);
     }
 
     private void OnCollisionEnter(Collision collision) {
